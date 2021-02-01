@@ -6,11 +6,11 @@
 CS7CS3 Advanced Software Engineering (Project 1)
 
 ## Team (Group 1)
+- Siddhesh Kankekar
+- Boris Flesch
+- Matteo Bresciani
 - Aishwarya Agarwal
 - Takshil Bharadwaj
-- Matteo Bresciani
-- Boris Flesch
-- Siddhesh Subhash Kankekar
 - Joshua Prakash Manoharan
 
 ## Content
