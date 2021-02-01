@@ -1,2 +1,2 @@
 # Simple-Paint-Splat-Game
-This is a simple game created with Phaser and node.js
+This is a paint-splat game created with Phaser3 and node.js
