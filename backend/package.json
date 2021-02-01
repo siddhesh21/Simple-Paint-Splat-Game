@@ -1,0 +1,15 @@
+{
+  "name": "Paint-Splat",
+  "version": "0.0.1",
+  "description": "Paint-Splat-Group1",
+  "scripts": {
+    "start": "node ./app.js",
+    "generate-docs": "jsdoc -c jsdoc.json"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "jsdoc": "^3.6.6",
+    "nodemon": "^2.0.6",
+    "socket.io": "^2.3.0"
+  }
+}

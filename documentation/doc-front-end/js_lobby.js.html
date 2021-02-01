@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: js/lobby.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: js/lobby.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Represents the main class.
+ * @constructor
+ */
+const lobbyScene = new Phaser.Class({
+    Extends: Phaser.Scene,
+    initialize: function() {
+        Phaser.Scene.call(this, { "key": "lobby" });
+    },
+    init: function(data) {
+        this.FLOAT_LEFT = 0.085;
+        this.OFFSET_COLOR = 0.03 * config.height;
+        this.OFFSET_TEXT = 0.04 * config.width;
+        this.START_Y = 0.3;
+        this.VERTICAL_STEP = 0.12;
+
+        this.players = data.players;
+        this.secondsRemaining = data.timeRemaining-1;
+/**
+ * Socket connection establishment. at the end of timer the game screen loaded along with the joined in players.
+ */
+        socket.on('gameStart', data => {
+            game.scene.stop("lobby");
+            socket.off('lobbyJoined');
+            window.clearInterval(this.timerUpdateCallLobby);
+            game.scene.start("game", data);
+        });
+    },
+/**
+ * Represents a function to load the predefined images in the screen.
+ */    
+    preload: function ()
+    {
+        this.load.image('lobby_background', 'assets/lobby_background.png');
+        this.load.image('box', 'assets/lobby_color.png');
+    },
+/**
+ * Represents a function to create and modify the way the screen looks.
+ */    
+    create: function() {
+        socket.on('lobbyJoined', data => {
+            this.players = data.players;
+
+            this.destroyPreviousPlayers();
+            this.labelAllPlayers();
+        });
+
+        // Setting the background
+        this.background = this.add.image(config.width/2, config.height/2, 'lobby_background');
+        this.background.setScale(config.width/this.background.width);
+
+        //give labels to scores on screen
+        this.labelAllPlayers();
+
+        const xLobbyTimerText = 0.9 * (config.width);
+        const yLobbyTimerText = 0.86 * (config.height);
+        this.updateTimerLobby(xLobbyTimerText, yLobbyTimerText)
+        this.timerUpdateCallLobby = window.setInterval(() => {
+            this.updateTimerLobby(xLobbyTimerText, yLobbyTimerText)
+        }, 1000);
+    },
+/**
+ * The function to destroy players from previous session joined.    
+ */
+    destroyPreviousPlayers() {
+        for (let i=0; i&lt;this.onScreenPlayerObjects.length; i++) {
+            this.onScreenPlayerObjects[i].destroy()
+        }
+    },
+/**
+ * Each time a new session of game starts the updateTimerLoby function will update the time.    
+ */  
+    updateTimerLobby(x, y){
+        if (this.previousTimerTextLobby !== undefined) {
+            this.previousTimerTextLobby.destroy();
+        }
+        
+        this.previousTimerTextLobby = set_timer_on_screen(this.secondsRemaining, this, x, y);
+        this.secondsRemaining = Math.max(0, this.secondsRemaining-1);
+    },
+/**
+ * Function to label all players present on the lobby screen.    
+ */  
+    labelAllPlayers() {
+        this.onScreenPlayerObjects = [];
+        for (let i=0; i&lt;this.players.length; i++) {
+            /**
+             * function call to the executable function.
+             */
+            this.labelOnScreen(this.players[i], i);
+        }
+    },
+    labelOnScreen(player, index) {
+        const xColor = config.width/2 - this.FLOAT_LEFT * config.width;
+        const yColor = (this.START_Y * config.height) + this.VERTICAL_STEP * config.height * index + this.OFFSET_COLOR;
+
+        const xText = config.width/2 - this.FLOAT_LEFT * config.width + this.OFFSET_TEXT;
+        const yText = (this.START_Y * config.height) + this.VERTICAL_STEP * config.height * index;
+    
+        const text = player.nickname;
+        const textColor = player.color.substring(1);
+
+        box = this.add.rectangle(xColor, yColor, 500, 500, "0x" + textColor);
+        box.setScale(config.box_scale * config.width/box.width);
+        box.setStrokeStyle(20, 0x000000);
+    
+        const playerName = this.add.text(xText, yText, text, { color: 'black', fontFamily: 'Arial', fontSize: '25px '});
+        this.onScreenPlayerObjects.push(box);
+        this.onScreenPlayerObjects.push(playerName);
+    }
+});
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="homeScene.html">homeScene</a></li><li><a href="leaderboardScene.html">leaderboardScene</a></li><li><a href="lobbyScene.html">lobbyScene</a></li></ul><h3>Global</h3><ul><li><a href="global.html#arrowDown">arrowDown</a></li><li><a href="global.html#arrowLeft">arrowLeft</a></li><li><a href="global.html#arrowRight">arrowRight</a></li><li><a href="global.html#arrowUp">arrowUp</a></li><li><a href="global.html#background">background</a></li><li><a href="global.html#calculateCoordinates">calculateCoordinates</a></li><li><a href="global.html#create">create</a></li><li><a href="global.html#destroyPreviousPlayers">destroyPreviousPlayers</a></li><li><a href="global.html#fireButton">fireButton</a></li><li><a href="global.html#gameScene">gameScene</a></li><li><a href="global.html#getCoordinates">getCoordinates</a></li><li><a href="global.html#grid">grid</a></li><li><a href="global.html#gridContainer">gridContainer</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#initHomeBtn">initHomeBtn</a></li><li><a href="global.html#labelAllPlayers">labelAllPlayers</a></li><li><a href="global.html#labelOnScreenResults">labelOnScreenResults</a></li><li><a href="global.html#onGameEnd">onGameEnd</a></li><li><a href="global.html#onNewPaint">onNewPaint</a></li><li><a href="global.html#onPaintMissed">onPaintMissed</a></li><li><a href="global.html#onPointerDown">onPointerDown</a></li><li><a href="global.html#paintPlayerOnScreen">paintPlayerOnScreen</a></li><li><a href="global.html#paintPlayerScoreOnScreen">paintPlayerScoreOnScreen</a></li><li><a href="global.html#paintSplatOnCoordinates">paintSplatOnCoordinates</a></li><li><a href="global.html#playerNickname">playerNickname</a></li><li><a href="global.html#preload">preload</a></li><li><a href="global.html#ROWS">ROWS</a></li><li><a href="global.html#set_timer_on_screen">set_timer_on_screen</a></li><li><a href="global.html#target">target</a></li><li><a href="global.html#triggerFire">triggerFire</a></li><li><a href="global.html#update">update</a></li><li><a href="global.html#updatePlayerScore">updatePlayerScore</a></li><li><a href="global.html#updateTargetAndCheckFire">updateTargetAndCheckFire</a></li><li><a href="global.html#updateTimerGame">updateTimerGame</a></li><li><a href="global.html#updateTimerLobby">updateTimerLobby</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.6</a> on Tue Nov 17 2020 00:16:15 GMT+0100 (GMT+01:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
